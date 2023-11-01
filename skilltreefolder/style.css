@@ -1,0 +1,38 @@
+body {
+ font-family: "Helvetica Neue", Helvetica, sans-serif;
+ margin-left: 20px; 
+ margin-top: 20px; 
+ margin-right: 20px;
+ margin-bottom: 20px;  
+}
+
+#Title {
+ font-size: 200%; 
+ font-weight: bold;
+}
+
+#Header {
+ font-size: 150%; 
+ font-weight: bold;
+ color: rgb(255, 145, 0);
+}
+
+#SubHeader {
+ font-size: 125%; 
+ font-weight: bold;
+ color: rgb(255, 165, 0);
+}
+
+#Parameter {
+ font-weight: bold;
+ color: rgb(255, 165, 0);
+}
+
+#Code {
+ border: 0.5px solid rgb(240, 240, 240);
+ padding: 10px;
+ width:fit-content;
+ font-family: Consolas, 'Courier New', monospace;
+ font-weight: bold;
+}
+

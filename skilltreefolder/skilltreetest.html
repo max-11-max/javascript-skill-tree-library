@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    
+    <title>SkillTreeGenerator</title>
+
+    <!------- Loading JS scripts ------->
+    <!-- When loading JS scripts, considerations should be made regarding when
+         the DOM is being loaded, and when different scripts 
+         depend on each other. Below are examples of a few different ways to load the scripts.
+
+     -->
+
+     <!-- Load any CSS before the JS in case you need to access styles in your scripts. -->
+     <!-- <link rel="stylesheet" type="text/css" href="someStylesheet.css"> -->
+
+   	<!-- If you don't use either 'async' or 'defer', the HTML parsing/DOM loading is blocked until the script is downloaded and executed. -->
+    <!-- Since it is the top script on the page, it will block 
+      before loading everything under it (including the <body>).  -->
+    <script src="dom_load.js"></script>
+
+    <!-- 'defer' states that the script should be executed after the HTML is parsed.
+         If multiple scripts have 'defer', they are loaded one after the other.  
+         This will guarantee execution order, and ensure that scripts that depend on each other load
+         in an order that will not cause errors. -->
+    <!-- First we load jquery from a Google CDN (content delivery network). -->
+    <script defer type="text/javascript" src='skilltree.js'></script>
+    <!-- Then we load a script that depends on our libraries (and jQuery) -->
+    <script defer type="text/javascript" src='test.js'></script>
+    <script defer type="text/javascript" src='color.js'></script>
+
+    <!-- 
+    - 'async' states that it is safe to download the script without blocking 
+    HTML parsing, and execute  once downloaded (DOM loading, if not completed, pauses during script execution).
+    This allows for quicker loading of the DOM content while waiting for scripts to download.
+    Note that if multiple scripts are 'async', their order
+    of loading is *not* guaratneed, and async scripts may also be executed after 
+    the 'DOMContentLoaded' event is fired (we make up for this in the dom_load_async.js file).
+    * General rule: don't use async on scripts that depend on each other. *
+     Often scripts like ads and analytics are loaded async since they don't depend
+     on other scipts.
+    -->
+    <script async type="text/javascript" src='dom_load_async.js'></script>
+
+ </head>
+ <body>
+  <div>
+    <div id=Title>SkillTreeGenerator - Max Yang
+    </div>
+    <br> <br>
+    <div id=Header>
+    Getting started:</div> <br>
+    To use the library, include the <b>skilltree.js </b> file.
+    <br>
+    The library is meant to aid in the creation of skill trees.
+    <br>
+    To start using the library, create a TreeGenerator Object, and use its methods to generate the tree, create and generate nodes (skill container/objects) and the connections between them (learning relationships).
+    <br>
+    <br>
+    
+    <div id=Header>
+    API:
+    </div>
+    <br>
+    To use the SkillTreeGenerator API, create a new TreeGenerator object:
+    <br> <br>
+    <div id=Code>
+      <b>var</b> TG = new TreeGenerator()
+    </div>
+
+    <br>
+
+    <div id=Header>
+      TreeGenerator methods
+    </div> 
+    <br>
+    The following are methods that every TreeGenerator object has, but should be done in the order of making the tree, making roots, and then making leaves and adding relations.
+    <br>
+    <br>
+    <div id=SubHeader>
+      .makeTree(name, colors=Optional, location=Optional)
+    </div> 
+    <br>
+    <b><b>Description:</b></b>Generates the SVG container of the Skill Tree, as well as setting properties of the tree with the parameters given, e.g. width, height, colors, location. There is meant to only be one tree created at a time. The SVG container will be initially set to 100 by 100, and will grow accordingly in size to the skill nodes created.
+    <br> <br>
+    <b>Parameters:</b>
+    <br> <br>
+    <div id=Parameter>
+      name
+    </div>
+    <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Name of the Skill Tree to be created
+    <br><br>
+
+    <div id=Parameter>
+      colors
+    </div>
+    <br>
+    <b>Type:</b> Array[int, int, int]
+    <br> <br>
+    <b>Default:</b> [255, 165, 0]
+    <br> <br>
+    <b>Description:</b> RGB integer values of the colors to be used as the main theme of the Skill Tree. By default it will be set to an orangish hue.
+    <br> <br>
+
+    <div id=Parameter>
+      location
+    </div>
+    <br>
+    <b>Type:</b> Array[int, int]
+    <br> <br>
+    <b>Default:</b> [5, 5]
+    <br> <br>
+    <b>Description:</b> The x, y coordinates of the SVG container for the skill tree (top left corner of the container). By default will be set to near the top left of the page document.
+
+    <br> <br>
+    <div id=SubHeader>
+      .makeRoot(name, shape=Optional)
+    </div>
+    <br>
+    <b>Description:</b> Method to create a root node (first skill containers), with the given parameters. Names are not meant to be repeated (at this stage in time). Roots will be created in order from left to right, and be in the top row (at this stage in time).
+    <br> <br>
+    <b>Parameters:</b>
+    <br> <br>
+
+    <div id=Parameter>
+      name
+    </div>
+    <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Name of the skill node to be created.
+    <br> <br>
+
+
+    <div id=Parameter>
+      shape
+    </div>
+    <br>
+    <b>Type:</b> String    <br> <br>
+    <b>Default:</b> “rect”
+    <br> <br>
+    <b>Description:</b> The shape of the skill node/container to be created. Possible values are “rect” for a rectangle, “circ” for a circle, and “hex”, for a hexagon.
+    
+    <br> <br>
+    <div id=SubHeader>
+      .makeLeaf(parent, child, shape)
+    </div>
+    <br>
+    <b>Description:</b> Method to create a leaf node (skill node/container descended from another skill). A relation (learning line) will automatically be created between the two, and child will be the skill node created descended from the parent skill node. Names (child in this case) are not meant to be repeated (at this stage in time).
+    <br> <br>
+    <b>Parameters:</b>
+    <br> <br>
+
+    <div id=Parameter>
+      parent
+    </div>
+    <br>
+    <b>Type:</b> String    <br> <br>
+    <b>Required:</b> Yes    <br> <br>
+    <b>Description:</b> Name of the skill node to be descended from.
+    <br> <br>
+    <div id=Parameter>
+      child
+    </div>
+    <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Name of the skill node to be created.
+    <br> <br>
+
+    <div id=Parameter>
+      shape
+    </div>
+    <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Default:</b> “rect”
+    <br> <br>
+    <b>Description:</b> The shape of the skill node/container to be created. Possible values are “rect” for a rectangle, “circ” for a circle, and “hex”, for a hexagon.
+
+    <br> <br>
+    <div id=SubHeader>
+      .addRelation(parent, child)
+    </div>
+    <br>
+    
+    <b>Description:</b> Method to add a relation (learning line) between the two skill nodes. Meant to be used with the parent node being one level (height wise) above the child node.
+    <br> <br>
+    <b>Parameters:</b>
+    <br> <br>
+    <div id=Parameter>
+      parent
+    </div> <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Name of the skill node for the relation to be descended from.
+    <br> <br>
+    <div id=Parameter>
+      child
+    </div> <br>
+    <b>Type:</b> String
+    <b>Required:</b> Yes
+    <b>Description:</b> Name of the skill node for the relation to descend to.
+
+    <br> <br>
+    <div id=SubHeader>
+      .addText(node, text)
+    </div> <br>
+    <b>Description:</b> Method to add text to the middle of a skill node.
+    <br> <br>
+    <b>Parameters:</b>
+    <br> <br>
+    <div id=Parameter>
+      node
+    </div> <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Name of the skill node for the text to be added to.
+    <br> <br>
+
+    <div id=Parameter>
+      text
+    </div> <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Text that is to be added to the middle of the specified skill node.
+    <br> <br>
+
+    <div id=SubHeader>
+      .showTree()
+    </div>
+    <br>
+    <b>Description:</b> Show the tree SVG container in the page, adding it to the page document’s body.
+
+    <div id=SubHeader>
+      .hideTree(id)
+    </div> <br>
+    <b>Description:</b> Hide the tree SVG container in the page, removing it from the page document’s body.
+    <br> <br>
+    <b>Parameters:</b>
+
+    <div id=Parameter>
+      id
+    </div> <br>
+    <b>Type:</b> String
+    <br> <br>
+    <b>Required:</b> Yes
+    <br> <br>
+    <b>Description:</b> Name of the skill tree to be hidden.
+
+  </div>
+  <br> <br>
+  <div id='Header'>Instructions:</div>
+  <br>
+  To learn a skill, double click the skill node. To unlearn the skill, double click again. Skills linked upwards must be learned before the skills linked below them. Unlearning a skill that is required for subsequent learned skills will unlearn the subsequent skills as well. To lock a skill from being learned/unlearned, right click the skill node.
+  <br> <br>
+ 	<div id='Header'>Examples:</div>
+   <br>
+   <b>Example 1:</b> Showing larger scale Skill Tree
+   <br> <br>
+  <div id=Code>
+    const tg = new TreeGenerator()
+    <br>
+
+    function example1() {<br>
+    &nbsp; tg.makeTree("tree1", [255, 165, 0], [5, 5])
+    <br>
+    &nbsp; tg.makeRoot("n1", "circ")
+    <br>
+    &nbsp; tg.makeRoot("n2", "hex")
+    <br>
+    &nbsp; tg.makeLeaf("n2", "n3")
+    <br>
+    &nbsp; tg.makeLeaf("n3", "n4", "circ")
+    <br>
+    &nbsp; tg.makeLeaf("n1", "n5", "hex")
+    <br>
+    &nbsp; tg.makeRoot("n6")
+    <br>
+    &nbsp; tg.showTree()
+    <br>
+    &nbsp; tg.addRelation("n1", "n3")
+    <br>
+    &nbsp; tg.addRelation("n6", "n3")
+    <br>
+    &nbsp; tg.makeLeaf("n5", "n7")
+    <br>
+    &nbsp; tg.addRelation("n3", "n7")
+    <br>
+    &nbsp; tg.addRelation("n5", "n4")
+    <br>
+    &nbsp; tg.addText("n1", "Number 1")
+    <br>
+    &nbsp; tg.addText("n2", "Number 2")
+    <br>
+    &nbsp; tg.addText("n3", "Number 3")
+    <br>
+    &nbsp; tg.showTree()
+    <br>
+    }
+    <br>
+    example1()
+  </div>
+  <br>
+   <b>Example 2:</b> Showing different color capabilities
+   <br> <br>
+  <div id=Code>
+    const tg2 = new TreeGenerator()
+    <br>
+    function example2() {<br>
+    &nbsp; tg2.makeTree("tree1", [200, 0, 0], [5, 5])
+    <br>
+    &nbsp; tg2.makeRoot("n1", "circ")
+    <br>
+    &nbsp; tg2.addText("n1", "Algebra")
+    <br>
+    &nbsp; tg2.showTree()<br>
+    } <br>
+    example2()
+  </div>
+  <br>
+   <b>Example 3:</b> Showing location setting abilities
+   <br> <br>
+   <div id=Code>
+    const tg3 = new TreeGenerator()
+    <br>
+    function example3() {<br>
+    &nbsp; tg3.makeTree("tree1", [255, 165, 0], [25, 5])
+    <br>
+    &nbsp; tg3.makeRoot("n1", "circ")
+    <br>
+    &nbsp; tg3.showTree()
+    <br>
+    }
+    <br>
+    example3()
+   </div>
+   <br>
+ </body>
+
+</html>
